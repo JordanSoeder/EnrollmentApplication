@@ -14,6 +14,56 @@ namespace EnrollmentApplication.Controllers
     {
         private EnrollmentDB db = new EnrollmentDB();
 
+        public ActionResult StudentOfTheMonth()
+        {
+            //Random Studnt
+            var Enrollment = GetStudentOfTheMonth();
+            return PartialView("_StudentOfTheMonth", Enrollment);
+        }
+        //Display Student Of The Month
+        private object GetStudentOfTheMonth()
+        {
+            var Enrollment = db.Enrollments
+                .OrderBy(a => System.Guid.NewGuid())
+                .First();
+
+            Enrollment.Grade = "A";
+            return Enrollment;
+        }
+
+
+
+        public ActionResult StudentSearch(string q)
+        {
+            var students = GetStudents(q);
+            return PartialView("_studentsearch", students);
+        }
+
+        private List<Student> GetStudents(string searchString)
+        {
+            return db.Students
+                 .Where(a => a.FirstName.Contains(searchString))
+                 .ToList();
+        }
+
+
+
+        public ActionResult CourseSearch(string q)
+        {
+            var courses = GetCourses(q);
+            return PartialView("_coursessearch", courses);
+        }
+
+        private List<Course> GetCourses(string searchString)
+        {
+            return db.Courses
+                 .Where(a => a.Title.Contains(searchString))
+                 .ToList();
+        }
+
+
+
+
         // GET: Enrollments
         public ActionResult Index()
         {
